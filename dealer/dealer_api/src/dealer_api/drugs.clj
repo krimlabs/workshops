@@ -3,7 +3,7 @@
             [dealer-api.config :refer [db]]
             [io.pedestal.http :as http]))
 
-(defn all-drugs [request]
+(defn all-drugs [_]
   (http/json-response (sql/drugs db)))
 
 (defn drug-by-id [request])
