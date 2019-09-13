@@ -8,7 +8,9 @@
 
 (defn drug-by-id [request])
 
-(defn create-drug [request])
+(defn create-drug [request]
+  (let [created-drug (sql/new-drug db {:name :availability :price})]
+    (http/json-response created-drug)))
 
 (defn update-drug-by-id [request])
 
