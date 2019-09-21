@@ -1,0 +1,13 @@
+{:source-paths
+ ["src/dev"
+  "src/main"
+  "src/test"]
+ :dev-http {8088 "build/"}
+ :dependencies [[reagent "0.8.1" :exclusions [cljsjs/react cljsjs/react-dom]]
+                [cider/cider-nrepl "0.22.1"]]
+ :builds
+ {:app {:target :browser
+        :output-dir "build/"
+        :asset-path "."
+        :modules {:main {:init-fn demo.core/main!}}
+        :devtools {:after-load demo.core/main!}}}}

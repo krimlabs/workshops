@@ -1,0 +1,21 @@
+{
+   "name": "tic-tac-toe",
+   "version": "1.0.0",
+   "main": "index.js",
+   "license": "MIT",
+   "devDependencies": {},
+   "scripts": {
+      "cljs-repl:app": "yarn shadow-cljs cljs-repl :app",
+      "copy-resources:app": "mkdir -p build; cp resources/* build/",
+      "watch:app": "yarn shadow-cljs watch :app",
+      "compile:app": "yarn shadow-cljs compile :app",
+      "release:app": "yarn shadow-cljs release :app",
+      "release": "yarn release:app; yarn copy-resources:app"
+   },
+   "dependencies": {
+      "create-react-class": "^15.6.3",
+      "react": "^16.9.0",
+      "react-dom": "^16.9.0",
+      "shadow-cljs": "^2.8.53"
+   }
+}
