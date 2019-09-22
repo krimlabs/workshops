@@ -36,7 +36,7 @@
   ;; Make sure that coord is not marked already
 
   ;; 03 - Update can move to check pos (x, y) is nil
-  ;;(-> @lattice (nth x) (nth y) nil?)
+  ;; (-> @lattice (nth x) (nth y) nil?)
   true
   )
 
@@ -44,7 +44,6 @@
   (when (can-move? x y)
     (swap! lattice update-in [x y] (fn [_] mark))
     (reset! turn (if (= @turn :o) :x :o))))
-
 
 (defn all-marks-in-row-equal? [matrix]
   (map els-equal-and-not-nil matrix))
@@ -66,6 +65,8 @@
   "Check the lattice to see if someone won"
   []
   {:row? (some true? (all-marks-in-row-equal? @lattice))
+   ;; 06 - Change the below code to check all-marks-in-rows-equal in transpose
+   ;;:col? (some true? (-> @lattice all-marks-in-row-equal?))
    :col? (some true? (-> @lattice transpose all-marks-in-row-equal?))
    :top-to-bottom-diag? (top-to-bottom-diagonal-equal? @lattice)
    :bottom-to-top-diag? (bottom-to-top-diagonal-equal? @lattice)})
@@ -124,13 +125,37 @@
   (transpose @lattice)
   (somebody-won?)
   (move 1 1 @turn)
+
+  ;; 04 - Just evaluate and check that row matching works
+  ;; first row
+  (do
+    (reset-state!)
+    (move 0 0 :o)
+    (move 0 1 :o)
+    (move 0 2 :o))
+
+  ;; 05 - Evaluate and check that column works (fix bug)
+  ;; first col
   (do
     (reset-state!)
     (move 0 0 :o)
     (move 1 0 :o)
     (move 2 0 :o))
 
+  ;; 07 - Evaluate and check that diag works (talk about ability to use functions to debug)
+  ;; (Close the ui now and let people visualise what's happening)
+  ;; top-to-bottom diag
+  (let [coords [[0 0] [1 1] [2 2]]]
+    (map (fn [[x y]]
+           (move x y :x)) coords))
+
   (winner)
 
   (bottom-to-top-diagonal-equal? @lattice)
-  (playable?))
+  (top-to-bottom-diagonal-equal? @lattice)
+  (playable?)
+
+
+  (move 0 0 :x)
+  (can-move? 0 0)
+  )
