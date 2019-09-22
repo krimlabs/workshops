@@ -1,11 +1,25 @@
 (ns demo.ttt
   (:require [reagent.core :as r]))
 
+(defn get-at [matrix x y]
+        (-> matrix
+            (nth x)
+            (nth y)))
+
+(defn els-equal-and-not-nil [els]
+  (and (apply = els)
+       (not (some nil? els))))
+
 (defonce base-lattice
   [[nil nil nil]
    [nil nil nil]
    [nil nil nil]])
 
+;; 00 - Read Lattice from atom after making changes to the UI
+
+;; 01 - Make this reactive
+;; (def lattice (atom base-lattice))
+;; (def turn (atom :x))
 (def lattice (r/atom base-lattice))
 (def turn (r/atom :x))
 
@@ -13,23 +27,25 @@
   (reset! lattice base-lattice)
   (reset! turn :x))
 
-
-;; 00 - no checks
-;; (defn move [x y mark]
-;;   (swap! lattice update-in [x y] (fn [_] mark)))
+;; 02 - Send code/data/control to the runtime
+(reset-state!)
 
 
-;; 01 - check that data is not overwritten
 (defn can-move? [x y]
   ;; Make sure that coord is not marked already
-  (-> @lattice (nth x) (nth y) nil?))
+
+  ;; 03 - Update can move to check pos (x, y) is nil
+  ;;(-> @lattice (nth x) (nth y) nil?)
+  true
+  )
 
 (defn move [x y mark]
   (when (can-move? x y)
-    (swap! lattice update-in [x y] (fn [_] mark))))
+    (swap! lattice update-in [x y] (fn [_] mark))
+    (reset! turn (if (= @turn :o) :x :o))))
 
 (defn all-marks-in-row-equal? [matrix]
-  (map #(and (apply = %) (some keyword? %)) matrix))
+  (map els-equal-and-not-nil matrix))
 
 (defn transpose [m]
   (apply mapv vector m))
@@ -52,15 +68,6 @@
    :top-to-bottom-diag? (top-to-bottom-diagonal-equal? @lattice)
    :bottom-to-top-diag? (bottom-to-top-diagonal-equal? @lattice)})
 
-(defn get-at [matrix x y]
-        (-> matrix
-            (nth x)
-            (nth y)))
-
-(defn els-equal-and-not-nil [els]
-  (and (apply = els)
-       (not (some nil? els))))
-
 (defn row-winner [matrix]
   (cond
     (els-equal-and-not-nil (nth matrix 0)) (get-at matrix 0 0)
@@ -76,8 +83,6 @@
             (:top-to-bottom-diag? win-stat)) (get-at @lattice 1 1)
         (:row? win-stat) (row-winner @lattice)
         (:col? win-stat) (row-winner (transpose @lattice))))))
-
-
 
 (defn playable?
   "Check if more moves can be made"
@@ -104,9 +109,7 @@
                                   nil"bg-washed-blue"
                                   :x "bg-green"
                                   :o "bg-yellow"))
-                          :onClick #(when (can-move? idx idy)
-                                      (move idx idy @turn)
-                                      (reset! turn (if (= @turn :o) :x :o)))}
+                          :onClick #(move idx idy @turn)}
                     (or col "-")])
                  row)])
              @lattice)])
@@ -114,7 +117,6 @@
              :onClick #(reset-state!)} "Reset"]])
 
 (comment
-  (map #(and (apply = %) (some keyword? %)) @lattice)
   @lattice
   (transpose @lattice)
   (somebody-won?)
@@ -126,5 +128,6 @@
     (move 2 0 :o))
 
   (winner)
+
   (bottom-to-top-diagonal-equal? @lattice)
   (playable?))
