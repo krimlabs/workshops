@@ -110,10 +110,11 @@
                                   :x "bg-green"
                                   :o "bg-yellow"))
                           :onClick #(move idx idy @turn)}
-                    (or col "-")])
+                    (or col "-")
+                    [:div {:class "f7 mt2"} (str "(" idx "," idy ")")]])
                  row)])
              @lattice)])
-   [:button {:class "db center mt4"
+   [:button {:class "db center mt4 pointer dim pa2 br2 ba b--black-20"
              :onClick #(reset-state!)} "Reset"]])
 
 (comment
