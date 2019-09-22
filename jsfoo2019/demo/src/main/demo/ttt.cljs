@@ -18,10 +18,11 @@
 ;; 00 - Read Lattice from atom after making changes to the UI
 
 ;; 01 - Make this reactive
-;; (def lattice (atom base-lattice))
-;; (def turn (atom :x))
-(def lattice (r/atom base-lattice))
-(def turn (r/atom :x))
+(def lattice (atom base-lattice))
+(def turn (atom :x))
+;; (def lattice (r/atom base-lattice))
+;; (def turn (r/atom :x))
+
 
 (defn reset-state! []
   (reset! lattice base-lattice)
@@ -43,6 +44,7 @@
   (when (can-move? x y)
     (swap! lattice update-in [x y] (fn [_] mark))
     (reset! turn (if (= @turn :o) :x :o))))
+
 
 (defn all-marks-in-row-equal? [matrix]
   (map els-equal-and-not-nil matrix))
