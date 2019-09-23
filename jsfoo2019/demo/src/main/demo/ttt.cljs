@@ -53,13 +53,14 @@
     (and (some keyword? diag)
          (apply = diag))))
 
+(prn (clj->js {:a :b}))
 (defn somebody-won?
   "Check the lattice to see if someone won"
   []
   {:row? (some true? (all-marks-in-row-equal? @lattice))
    ;; 06 - Change the below code to check all-marks-in-rows-equal in transpose
-   ;;:col? (some true? (-> @lattice all-marks-in-row-equal?))
-   :col? (some true? (-> @lattice transpose all-marks-in-row-equal?))
+   :col? (some true? (-> @lattice all-marks-in-row-equal?))
+   ;;:col? (some true? (-> @lattice transpose all-marks-in-row-equal?))
    :top-to-bottom-diag? (top-to-bottom-diagonal-equal? @lattice)
    :bottom-to-top-diag? (bottom-to-top-diagonal-equal? @lattice)})
 
@@ -114,6 +115,7 @@
 
 (comment
   ;; Rich Comment
+  ;; -01 Send/ Recieve data to/from runtime
   ;; 00 - Read Lattice from atom after making changes to the UI
   @lattice
 
