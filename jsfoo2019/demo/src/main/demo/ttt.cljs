@@ -1,11 +1,6 @@
 (ns demo.ttt
   (:require [reagent.core :as r]))
 
-(defn get-at [matrix x y]
-        (-> matrix
-            (nth x)
-            (nth y)))
-
 (defn els-equal-and-not-nil [els]
   (and (apply = els)
        (not (some nil? els))))
@@ -14,8 +9,6 @@
   [[nil nil nil]
    [nil nil nil]
    [nil nil nil]])
-
-;; 00 - Read Lattice from atom after making changes to the UI
 
 ;; 01 - Make this reactive
 (def lattice (atom base-lattice))
@@ -30,7 +23,6 @@
 
 ;; 02 - Send code/data/control to the runtime
 (reset-state!)
-
 
 (defn can-move? [x y]
   ;; Make sure that coord is not marked already
@@ -73,9 +65,9 @@
 
 (defn row-winner [matrix]
   (cond
-    (els-equal-and-not-nil (nth matrix 0)) (get-at matrix 0 0)
-    (els-equal-and-not-nil (nth matrix 1)) (get-at matrix 1 0)
-    (els-equal-and-not-nil (nth matrix 2)) (get-at matrix 2 0)))
+    (els-equal-and-not-nil (nth matrix 0)) (get-in matrix [0 0])
+    (els-equal-and-not-nil (nth matrix 1)) (get-in matrix [1 0])
+    (els-equal-and-not-nil (nth matrix 2)) (get-in matrix [2 0])))
 
 (defn winner []
   (let [win-stat (somebody-won?)
@@ -83,7 +75,7 @@
     (when winner?
       (cond
         (or (:bottom-to-top-diag? win-stat)
-            (:top-to-bottom-diag? win-stat)) (get-at @lattice 1 1)
+            (:top-to-bottom-diag? win-stat)) (get-in @lattice [1 1])
         (:row? win-stat) (row-winner @lattice)
         (:col? win-stat) (row-winner (transpose @lattice))))))
 
@@ -121,10 +113,9 @@
              :onClick #(reset-state!)} "Reset"]])
 
 (comment
+  ;; Rich Comment
+  ;; 00 - Read Lattice from atom after making changes to the UI
   @lattice
-  (transpose @lattice)
-  (somebody-won?)
-  (move 1 1 @turn)
 
   ;; 04 - Just evaluate and check that row matching works
   ;; first row
@@ -155,7 +146,13 @@
   (top-to-bottom-diagonal-equal? @lattice)
   (playable?)
 
-
   (move 0 0 :x)
   (can-move? 0 0)
   )
+
+
+
+
+
+
+
