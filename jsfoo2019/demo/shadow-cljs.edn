@@ -4,7 +4,9 @@
   "src/test"]
  :dev-http {8088 "build/"}
  :dependencies [[reagent "0.8.1" :exclusions [cljsjs/react cljsjs/react-dom]]
-                [cider/cider-nrepl "0.22.1"]]
+                [cider/cider-nrepl "0.22.1"]
+                [org.clojure/test.check "0.10.0"]
+                [org.clojure/spec.alpha "0.2.176"]]
  :builds
  {:app {:target :browser
         :output-dir "build/"

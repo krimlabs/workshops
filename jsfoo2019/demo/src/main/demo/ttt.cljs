@@ -28,7 +28,7 @@
   ;; Make sure that coord is not marked already
 
   ;; 04 - Update can move to check pos (x, y) is nil
-  ;; (nil? (get-in @lattice [x y]))
+  ; (nil? (get-in @lattice [x y]))
   true
   )
 
@@ -36,10 +36,6 @@
   (when (can-move? x y)
     (swap! lattice update-in [x y] (fn [_] mark))
     (reset! turn (if (= @turn :o) :x :o))))
-
-(move 0 0 :x)
-
-(can-move? 0 0)
 
 (defn all-marks-in-row-equal? [matrix]
   (map els-equal-and-not-nil matrix))
