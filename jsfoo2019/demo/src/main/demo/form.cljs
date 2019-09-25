@@ -12,9 +12,9 @@
                         :opt-un [::phone-number]))
 
 
-(defonce state (r/atom {:first-name nil
-                        :last-name nil
-                        :phone-number nil}))
+(def state (r/atom {:first-name nil
+                    :last-name nil
+                    :phone-number nil}))
 
 (defonce error (r/atom nil))
 
@@ -29,6 +29,7 @@
 (defn validate []
   (s/valid? ::person @state))
 
+;; 00 - Introduce how on-submit works
 (defn on-submit []
   (reset! error nil)
   (if (s/valid? ::person @state)
@@ -47,22 +48,25 @@
              :on-click #(on-submit)}
     "Submit"]])
 
-
 (comment
-  ;; gen n samples
+  ;; 01 - gen 1 sample
+  (gen/sample (s/gen ::person) 1)
+
   (defn gen-samples [n]
     (let [samples (gen/sample (s/gen ::person) n)]
       (if (= n 1) (first samples) samples)))
 
+  ;; 02 - Function to generate n samples
   (gen-samples 1)
 
+  ;; 03 - View samples in the repl
   (pprint/print-table (gen-samples 8))
 
-  ;; check filling form with one value and submit
+  ;; 04 - Check filling form with one value and submit
   (reset! state (first (gen/sample (s/gen ::person) 1)))
   (on-submit)
 
-  ;; create table of validations
+  ;; 05 - Create table of generative validations
   (let [sample (gen/sample (s/gen ::person) 20)
         with-validation (map #(assoc % :valid (s/valid? ::person %)) sample)]
     (pprint/print-table with-validation))
