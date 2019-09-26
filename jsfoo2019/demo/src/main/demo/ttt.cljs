@@ -11,10 +11,10 @@
    [nil nil nil]])
 
 ;; 02 - Make this reactive
-;; (def lattice (atom base-lattice))
-;; (def turn (atom :x))
-(def lattice (r/atom base-lattice))
-(def turn (r/atom :x))
+(def lattice (atom base-lattice))
+(def turn (atom :x))
+;; (def lattice (r/atom base-lattice))
+;; (def turn (r/atom :x))
 
 
 (defn reset-state! []
@@ -28,8 +28,8 @@
   ;; Make sure that coord is not marked already
 
   ;; 04 - Update can move to check pos (x, y) is nil
-  (nil? (get-in @lattice [x y]))
-  ;;true
+  ;; (nil? (get-in @lattice [x y]))
+  true
   )
 
 (defn move [x y mark]

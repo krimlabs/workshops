@@ -4,8 +4,8 @@
             [clojure.spec.alpha :as s]
             [clojure.pprint :as pprint]))
 
-(s/def ::first-name (s/and string? #(<= (count %) 24) #(>= (count %) 8)))
-(s/def ::last-name (s/and string? #(<= (count %) 24) #(>= (count %) 8)))
+(s/def ::first-name (s/and string? #(<= (count %) 24) #(>= (count %) 4)))
+(s/def ::last-name (s/and string? #(<= (count %) 24) #(>= (count %) 4)))
 (s/def ::phone-number (s/and int? #(<= % 9999999999) #(>= % 100000000)))
 
 (s/def ::person (s/keys :req-un [::first-name ::last-name]
@@ -49,24 +49,29 @@
     "Submit"]])
 
 (comment
-  ;; 01 - gen 1 sample
+
+  ;; 01 - Validate manually
+  (s/valid? ::person {:first-name "Shivek" :last-name "Khurana"
+                      :phone-number 9999999997})
+
+  ;; 02 - gen 1 sample
   (gen/sample (s/gen ::person) 1)
 
   (defn gen-samples [n]
     (let [samples (gen/sample (s/gen ::person) n)]
       (if (= n 1) (first samples) samples)))
 
-  ;; 02 - Function to generate n samples
-  (gen-samples 1)
+  ;; 03 - Function to generate n samples
+  (gen-samples 2)
 
-  ;; 03 - View samples in the repl
+  ;; 04 - View samples in the repl
   (pprint/print-table (gen-samples 8))
 
-  ;; 04 - Check filling form with one value and submit
+  ;; 05 - Check filling form with one value and submit
   (reset! state (first (gen/sample (s/gen ::person) 1)))
   (on-submit)
 
-  ;; 05 - Create table of generative validations
+  ;; 06 - Create table of generative validations
   (let [sample (gen/sample (s/gen ::person) 20)
         with-validation (map #(assoc % :valid (s/valid? ::person %)) sample)]
     (pprint/print-table with-validation))
