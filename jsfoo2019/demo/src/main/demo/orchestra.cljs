@@ -21,5 +21,7 @@
   (my-inc 1)
 
   ;; 02 - fails if not int
-  (my-inc :a))
+  (my-inc :a)
+
+  )
 

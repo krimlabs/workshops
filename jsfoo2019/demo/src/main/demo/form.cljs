@@ -4,8 +4,15 @@
             [clojure.spec.alpha :as s]
             [clojure.pprint :as pprint]))
 
-(s/def ::first-name (s/and string? #(<= (count %) 24) #(>= (count %) 4)))
-(s/def ::last-name (s/and string? #(<= (count %) 24) #(>= (count %) 4)))
+(defn count-between? [lower upper s]
+  (and (<= (count s) upper)
+       (>= (count s) lower)))
+
+(defn formatted-name? [s]
+  (re-matches #"[A-Z][a-z]*" s))
+
+(s/def ::first-name (s/and string? #(count-between? 4 24 %)))
+(s/def ::last-name (s/and string? #(count-between? 4 24 %)))
 (s/def ::phone-number (s/and int? #(<= % 9999999999) #(>= % 100000000)))
 
 (s/def ::person (s/keys :req-un [::first-name ::last-name]
@@ -25,9 +32,6 @@
             :type "text"
             :value (key @state)
             :on-change #(swap! state assoc key (-> % .-target .-value))}]])
-
-(defn validate []
-  (s/valid? ::person @state))
 
 ;; 00 - Introduce how on-submit works
 (defn on-submit []
@@ -55,20 +59,16 @@
                       :phone-number 9999999997})
 
   ;; 02 - gen 1 sample
-  (gen/sample (s/gen ::person) 1)
-
-  (defn gen-samples [n]
-    (let [samples (gen/sample (s/gen ::person) n)]
-      (if (= n 1) (first samples) samples)))
+  (gen/generate (s/gen ::person))
 
   ;; 03 - Function to generate n samples
-  (gen-samples 2)
+  (gen/sample (s/gen ::person) 4)
 
   ;; 04 - View samples in the repl
-  (pprint/print-table (gen-samples 8))
+  (pprint/print-table (gen/sample (s/gen ::person) 8))
 
   ;; 05 - Check filling form with one value and submit
-  (reset! state (first (gen/sample (s/gen ::person) 1)))
+  (reset! state (gen/generate (s/gen ::person)))
   (on-submit)
 
   ;; 06 - Create table of generative validations
