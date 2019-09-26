@@ -31,7 +31,9 @@
    [:input {:class "pa1"
             :type "text"
             :value (key @state)
-            :on-change #(swap! state assoc key (-> % .-target .-value))}]])
+            :on-change #(if (= key :phone-number)
+                          (swap! state assoc key (-> % .-target .-value js/parseInt))
+                          (swap! state assoc key (-> % .-target .-value)))}]])
 
 ;; 00 - Introduce how on-submit works
 (defn on-submit []
