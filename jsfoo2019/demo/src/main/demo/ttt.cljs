@@ -33,7 +33,9 @@
   )
 
 (defn move [x y mark]
+  ;; when can move to a coord
   (when (can-move? x y)
+    ;; update turn and lattice
     (swap! lattice update-in [x y] (fn [_] mark))
     (reset! turn (if (= @turn :o) :x :o))))
 
