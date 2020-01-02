@@ -11,10 +11,10 @@
    [nil nil nil]])
 
 ;; 02 - Make this reactive
-(def lattice (atom base-lattice))
-(def turn (atom :x))
-;; (def lattice (r/atom base-lattice))
-;; (def turn (r/atom :x))
+;; (def lattice (atom base-lattice))
+;; (def turn (atom :x))
+(def lattice (r/atom base-lattice))
+(def turn (r/atom :x))
 
 
 (defn reset-state! []
@@ -115,6 +115,8 @@
 (comment
   ;; Rich Comment
   ;; 00 Send/ Recieve data to/from runtime
+  (println 1)
+  (js/alert :a)
   ;; 01 - Read Lattice from atom after making changes to the UI
   @lattice
 
