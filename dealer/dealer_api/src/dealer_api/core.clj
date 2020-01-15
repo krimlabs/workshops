@@ -1,39 +1,26 @@
 (ns dealer-api.core
   (:require [io.pedestal.http :as http]
-            [clojure.tools.namespace.repl :refer [refresh]]
+            [io.pedestal.http.body-params :refer [body-params]]
+            [io.pedestal.http.route :as route]
             [dealer-api.drugs]))
 
 (defn respond-hello [request]
   {:status 200
    :body "Hello World"})
 
+
 (def routes
   #{["/hello" :get `respond-hello]
-    ["/drugs" :get dealer-api.drugs/all-drugs :route-name :get-drugs]})
-
+    ["/drugs" :get dealer-api.drugs/all-drugs :route-name :get-drugs]
+    ["/drugs" :post [(body-params) dealer-api.drugs/create-drug] :route-name :post-drugs]
+    })
 
 (def service-map
   {::http/routes routes
-   ::http/type   :jetty
-   ::http/port   8890})
+   ::http/type :jetty
+   ::http/port 8890})
 
-;; For interactive development
-(defonce server (atom nil))
-
-(defn go []
-  (reset! server
-          (http/start (http/create-server
-                       (assoc service-map
-                              ::http/join? false))))
-  (prn "Server started on localhost:8890")
-  (prn "Enter (reset) to reload.")
-  :started)
-
-(defn halt []
-  (http/stop @server))
-
-(defn reset []
-  (halt)
-  (refresh :after 'dealer-api.core/go))
-
-
+(defn start-server []
+  (http/start (http/create-server
+               (assoc service-map
+                      ::http/join? false))))
